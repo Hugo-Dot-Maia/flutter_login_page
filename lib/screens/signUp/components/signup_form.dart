@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 
 import '../../../components/already_have_an_account_acheck.dart';
 import '../../../constants.dart';
-import '../../signUp/signup_screen.dart';
+import '../../Login/login_screen.dart';
 
-class LoginForm extends StatelessWidget {
-  const LoginForm({
+class SignUpForm extends StatelessWidget {
+  const SignUpForm({
     Key? key,
   }) : super(key: key);
 
@@ -42,27 +42,25 @@ class LoginForm extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(height: defaultPadding),
-          Hero(
-            tag: "login_btn",
-            child: ElevatedButton(
-              onPressed: () {},
-              child: Text(
-                "Login".toUpperCase(),
-              ),
-            ),
+          const SizedBox(height: defaultPadding / 2),
+          ElevatedButton(
+            onPressed: () {},
+            child: Text("Sign Up".toUpperCase()),
           ),
           const SizedBox(height: defaultPadding),
-          AlreadyHaveAnAccountCheck(press: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) {
-                  return const SignUpScreen();
-                },
-              ),
-            );
-          })
+          AlreadyHaveAnAccountCheck(
+            login: false,
+            press: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) {
+                    return const LoginScreen();
+                  },
+                ),
+              );
+            },
+          ),
         ],
       ),
     );
