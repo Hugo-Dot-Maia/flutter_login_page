@@ -15,10 +15,14 @@ class SignUpForm extends StatefulWidget {
 }
 
 class _SignUpFormState extends State<SignUpForm> {
+  bool _passwordVisible = false;
+  bool _confirmPasswordVisible = false;
   String _gender = '';
   String _role = '';
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
   final TextEditingController _dateOfBirthController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
 
@@ -32,6 +36,7 @@ class _SignUpFormState extends State<SignUpForm> {
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
+    _confirmPasswordController.dispose();
     _dateOfBirthController.dispose();
     _phoneController.dispose();
     super.dispose();
@@ -63,14 +68,25 @@ class _SignUpFormState extends State<SignUpForm> {
             padding: const EdgeInsets.symmetric(vertical: defaultPadding),
             child: TextFormField(
               textInputAction: TextInputAction.done,
-              obscureText: true,
+              obscureText: !_passwordVisible,
               cursorColor: kPrimaryColor,
               controller: _passwordController,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 hintText: "Your password",
-                prefixIcon: Padding(
+                prefixIcon: const Padding(
                   padding: EdgeInsets.all(defaultPadding),
                   child: Icon(Icons.lock),
+                ),
+                suffixIcon: IconButton(
+                  icon: Icon(
+                    _passwordVisible ? Icons.visibility : Icons.visibility_off,
+                    color: _passwordVisible ? kPrimaryColor : Colors.grey,
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      _passwordVisible = !_passwordVisible;
+                    });
+                  },
                 ),
               ),
             ),
@@ -79,13 +95,28 @@ class _SignUpFormState extends State<SignUpForm> {
             padding: const EdgeInsets.symmetric(vertical: defaultPadding),
             child: TextFormField(
               textInputAction: TextInputAction.done,
-              obscureText: true,
+              obscureText: !_confirmPasswordVisible,
               cursorColor: kPrimaryColor,
-              decoration: const InputDecoration(
+              controller: _confirmPasswordController,
+              decoration: InputDecoration(
                 hintText: "Confirm password",
-                prefixIcon: Padding(
+                prefixIcon: const Padding(
                   padding: EdgeInsets.all(defaultPadding),
                   child: Icon(Icons.lock),
+                ),
+                suffixIcon: IconButton(
+                  icon: Icon(
+                    _confirmPasswordVisible
+                        ? Icons.visibility
+                        : Icons.visibility_off,
+                    color:
+                        _confirmPasswordVisible ? kPrimaryColor : Colors.grey,
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      _confirmPasswordVisible = !_confirmPasswordVisible;
+                    });
+                  },
                 ),
               ),
             ),
