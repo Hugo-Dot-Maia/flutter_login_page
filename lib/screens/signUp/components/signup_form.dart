@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import '../../../components/already_have_an_account_acheck.dart';
 import '../../../constants.dart';
+import '../../../entities/user_form.dart';
 import '../../Login/login_screen.dart';
+import 'gender_radio_button.dart';
 
 class SignUpForm extends StatefulWidget {
   const SignUpForm({
@@ -14,6 +16,26 @@ class SignUpForm extends StatefulWidget {
 
 class _SignUpFormState extends State<SignUpForm> {
   String _gender = '';
+  String _role = '';
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _dateOfBirthController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
+
+  void _setGender(String? value) {
+    setState(() {
+      _gender = value!;
+    });
+  }
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    _dateOfBirthController.dispose();
+    _phoneController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,6 +49,7 @@ class _SignUpFormState extends State<SignUpForm> {
             keyboardType: TextInputType.emailAddress,
             textInputAction: TextInputAction.next,
             cursorColor: kPrimaryColor,
+            controller: _emailController,
             onSaved: (email) {},
             decoration: const InputDecoration(
               hintText: "Your email",
@@ -42,6 +65,7 @@ class _SignUpFormState extends State<SignUpForm> {
               textInputAction: TextInputAction.done,
               obscureText: true,
               cursorColor: kPrimaryColor,
+              controller: _passwordController,
               decoration: const InputDecoration(
                 hintText: "Your password",
                 prefixIcon: Padding(
@@ -67,52 +91,13 @@ class _SignUpFormState extends State<SignUpForm> {
             ),
           ),
           const SizedBox(height: defaultPadding / 2),
-          const Center(
-            child: Text(
-              'Gender',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-          ),
-          Row(
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Radio<String>(
-                value: 'Male',
-                groupValue: _gender,
-                onChanged: (value) {
-                  setState(() {
-                    _gender = value!;
-                  });
-                },
+              GenderSelectionWidget(
+                gender: _gender,
+                setGender: _setGender,
               ),
-              const Text('Male'),
-            ],
-          ),
-          Row(
-            children: [
-              Radio<String>(
-                value: 'Female',
-                groupValue: _gender,
-                onChanged: (value) {
-                  setState(() {
-                    _gender = value!;
-                  });
-                },
-              ),
-              const Text('Female'),
-            ],
-          ),
-          Row(
-            children: [
-              Radio<String>(
-                value: 'Other',
-                groupValue: _gender,
-                onChanged: (value) {
-                  setState(() {
-                    _gender = value!;
-                  });
-                },
-              ),
-              const Text('Other'),
             ],
           ),
           const SizedBox(height: defaultPadding),
@@ -120,8 +105,9 @@ class _SignUpFormState extends State<SignUpForm> {
             keyboardType: TextInputType.datetime,
             cursorColor: kPrimaryColor,
             onSaved: (dateOfBirth) {},
+            controller: _dateOfBirthController,
             decoration: const InputDecoration(
-              hintText: "Date of Birth",
+              hintText: "Date of birth (dd/mm/yyyy)",
               prefixIcon: Padding(
                 padding: EdgeInsets.all(defaultPadding),
                 child: Icon(Icons.calendar_today),
@@ -133,6 +119,7 @@ class _SignUpFormState extends State<SignUpForm> {
             keyboardType: TextInputType.phone,
             cursorColor: kPrimaryColor,
             onSaved: (phone) {},
+            controller: _phoneController,
             decoration: const InputDecoration(
               hintText: "Phone number",
               prefixIcon: Padding(
@@ -144,7 +131,15 @@ class _SignUpFormState extends State<SignUpForm> {
           const SizedBox(height: defaultPadding),
           Center(
             child: ElevatedButton(
-              onPressed: () {},
+              onPressed: () {
+                SignUpData signUpData = SignUpData(
+                  email: _emailController.text,
+                  password: _passwordController.text,
+                  gender: _gender == '' ? "Other" : _gender,
+                  dateOfBirth: _dateOfBirthController.text,
+                  phone: _phoneController.text,
+                );
+              },
               child: Text("Sign Up".toUpperCase()),
             ),
           ),
