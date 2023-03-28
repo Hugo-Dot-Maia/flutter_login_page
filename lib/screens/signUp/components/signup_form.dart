@@ -4,6 +4,7 @@ import '../../../constants.dart';
 import '../../../entities/user_form.dart';
 import '../../Login/login_screen.dart';
 import 'gender_radio_button.dart';
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
 class SignUpForm extends StatefulWidget {
   const SignUpForm({
@@ -17,6 +18,7 @@ class SignUpForm extends StatefulWidget {
 class _SignUpFormState extends State<SignUpForm> {
   bool _passwordVisible = false;
   bool _confirmPasswordVisible = false;
+  bool passWordMatch = true;
   String _gender = '';
   String _role = '';
   final TextEditingController _emailController = TextEditingController();
@@ -25,6 +27,16 @@ class _SignUpFormState extends State<SignUpForm> {
       TextEditingController();
   final TextEditingController _dateOfBirthController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
+
+  final phoneFormatter = new MaskTextInputFormatter(
+      mask: '## (##) #####-####',
+      filter: {"#": RegExp(r'[0-9]')},
+      type: MaskAutoCompletionType.lazy);
+
+  final dateFormatter = new MaskTextInputFormatter(
+      mask: '##/##/####',
+      filter: {"#": RegExp(r'[0-9]')},
+      type: MaskAutoCompletionType.lazy);
 
   void _setGender(String? value) {
     setState(() {
@@ -42,6 +54,20 @@ class _SignUpFormState extends State<SignUpForm> {
     super.dispose();
   }
 
+  bool _validatePassword() {
+    if (_passwordController.text != _confirmPasswordController.text) {
+      setState(() {
+        passWordMatch = false;
+      });
+      return false;
+    }
+    return true;
+  }
+
+  bool _validateInputs() {
+    return _validatePassword();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -57,7 +83,8 @@ class _SignUpFormState extends State<SignUpForm> {
             controller: _emailController,
             onSaved: (email) {},
             decoration: const InputDecoration(
-              hintText: "Your email",
+              labelText: "Your email",
+              floatingLabelBehavior: FloatingLabelBehavior.auto,
               prefixIcon: Padding(
                 padding: EdgeInsets.all(defaultPadding),
                 child: Icon(Icons.person),
@@ -72,10 +99,13 @@ class _SignUpFormState extends State<SignUpForm> {
               cursorColor: kPrimaryColor,
               controller: _passwordController,
               decoration: InputDecoration(
-                hintText: "Your password",
-                prefixIcon: const Padding(
-                  padding: EdgeInsets.all(defaultPadding),
-                  child: Icon(Icons.lock),
+                labelText: "Your password",
+                floatingLabelBehavior: FloatingLabelBehavior.auto,
+                errorText: passWordMatch ? null : "Password does not match",
+                prefixIcon: Padding(
+                  padding: const EdgeInsets.all(defaultPadding),
+                  child: Icon(Icons.lock,
+                      color: passWordMatch ? null : Colors.red),
                 ),
                 suffixIcon: IconButton(
                   icon: Icon(
@@ -99,10 +129,13 @@ class _SignUpFormState extends State<SignUpForm> {
               cursorColor: kPrimaryColor,
               controller: _confirmPasswordController,
               decoration: InputDecoration(
-                hintText: "Confirm password",
-                prefixIcon: const Padding(
-                  padding: EdgeInsets.all(defaultPadding),
-                  child: Icon(Icons.lock),
+                labelText: "Confirm password",
+                errorText: passWordMatch ? null : "Password does not match",
+                floatingLabelBehavior: FloatingLabelBehavior.auto,
+                prefixIcon: Padding(
+                  padding: const EdgeInsets.all(defaultPadding),
+                  child: Icon(Icons.lock,
+                      color: passWordMatch ? null : Colors.red),
                 ),
                 suffixIcon: IconButton(
                   icon: Icon(
@@ -137,8 +170,10 @@ class _SignUpFormState extends State<SignUpForm> {
             cursorColor: kPrimaryColor,
             onSaved: (dateOfBirth) {},
             controller: _dateOfBirthController,
+            inputFormatters: [dateFormatter],
             decoration: const InputDecoration(
-              hintText: "Date of birth (dd/mm/yyyy)",
+              labelText: "Date of birth (dd/mm/yyyy)",
+              floatingLabelBehavior: FloatingLabelBehavior.auto,
               prefixIcon: Padding(
                 padding: EdgeInsets.all(defaultPadding),
                 child: Icon(Icons.calendar_today),
@@ -151,8 +186,10 @@ class _SignUpFormState extends State<SignUpForm> {
             cursorColor: kPrimaryColor,
             onSaved: (phone) {},
             controller: _phoneController,
+            inputFormatters: [phoneFormatter],
             decoration: const InputDecoration(
-              hintText: "Phone number",
+              labelText: "Phone number",
+              floatingLabelBehavior: FloatingLabelBehavior.auto,
               prefixIcon: Padding(
                 padding: EdgeInsets.all(defaultPadding),
                 child: Icon(Icons.phone),
@@ -163,6 +200,9 @@ class _SignUpFormState extends State<SignUpForm> {
           Center(
             child: ElevatedButton(
               onPressed: () {
+                if (!_validateInputs()) {
+                  return;
+                }
                 SignUpData signUpData = SignUpData(
                   email: _emailController.text,
                   password: _passwordController.text,
@@ -170,6 +210,7 @@ class _SignUpFormState extends State<SignUpForm> {
                   dateOfBirth: _dateOfBirthController.text,
                   phone: _phoneController.text,
                 );
+                var i = 0;
               },
               child: Text("Sign Up".toUpperCase()),
             ),
