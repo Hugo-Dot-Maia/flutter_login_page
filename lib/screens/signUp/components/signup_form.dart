@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import '../../../components/already_have_an_account_acheck.dart';
 import '../../../constants.dart';
+import '../../../entities/user_form.dart';
 import '../../Login/login_screen.dart';
+import 'gender_radio_button.dart';
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
 class SignUpForm extends StatefulWidget {
   const SignUpForm({
@@ -13,7 +16,57 @@ class SignUpForm extends StatefulWidget {
 }
 
 class _SignUpFormState extends State<SignUpForm> {
+  bool _passwordVisible = false;
+  bool _confirmPasswordVisible = false;
+  bool passWordMatch = true;
   String _gender = '';
+  String _role = '';
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
+  final TextEditingController _dateOfBirthController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
+
+  final phoneFormatter = new MaskTextInputFormatter(
+      mask: '## (##) #####-####',
+      filter: {"#": RegExp(r'[0-9]')},
+      type: MaskAutoCompletionType.lazy);
+
+  final dateFormatter = new MaskTextInputFormatter(
+      mask: '##/##/####',
+      filter: {"#": RegExp(r'[0-9]')},
+      type: MaskAutoCompletionType.lazy);
+
+  void _setGender(String? value) {
+    setState(() {
+      _gender = value!;
+    });
+  }
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    _confirmPasswordController.dispose();
+    _dateOfBirthController.dispose();
+    _phoneController.dispose();
+    super.dispose();
+  }
+
+  bool _validatePassword() {
+    if (_passwordController.text != _confirmPasswordController.text) {
+      setState(() {
+        passWordMatch = false;
+      });
+      return false;
+    }
+    return true;
+  }
+
+  bool _validateInputs() {
+    return _validatePassword();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,9 +80,11 @@ class _SignUpFormState extends State<SignUpForm> {
             keyboardType: TextInputType.emailAddress,
             textInputAction: TextInputAction.next,
             cursorColor: kPrimaryColor,
+            controller: _emailController,
             onSaved: (email) {},
             decoration: const InputDecoration(
-              hintText: "Your email",
+              labelText: "Your email",
+              floatingLabelBehavior: FloatingLabelBehavior.auto,
               prefixIcon: Padding(
                 padding: EdgeInsets.all(defaultPadding),
                 child: Icon(Icons.person),
@@ -40,13 +95,28 @@ class _SignUpFormState extends State<SignUpForm> {
             padding: const EdgeInsets.symmetric(vertical: defaultPadding),
             child: TextFormField(
               textInputAction: TextInputAction.done,
-              obscureText: true,
+              obscureText: !_passwordVisible,
               cursorColor: kPrimaryColor,
-              decoration: const InputDecoration(
-                hintText: "Your password",
+              controller: _passwordController,
+              decoration: InputDecoration(
+                labelText: "Your password",
+                floatingLabelBehavior: FloatingLabelBehavior.auto,
+                errorText: passWordMatch ? null : "Password does not match",
                 prefixIcon: Padding(
-                  padding: EdgeInsets.all(defaultPadding),
-                  child: Icon(Icons.lock),
+                  padding: const EdgeInsets.all(defaultPadding),
+                  child: Icon(Icons.lock,
+                      color: passWordMatch ? null : Colors.red),
+                ),
+                suffixIcon: IconButton(
+                  icon: Icon(
+                    _passwordVisible ? Icons.visibility : Icons.visibility_off,
+                    color: _passwordVisible ? kPrimaryColor : Colors.grey,
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      _passwordVisible = !_passwordVisible;
+                    });
+                  },
                 ),
               ),
             ),
@@ -55,64 +125,43 @@ class _SignUpFormState extends State<SignUpForm> {
             padding: const EdgeInsets.symmetric(vertical: defaultPadding),
             child: TextFormField(
               textInputAction: TextInputAction.done,
-              obscureText: true,
+              obscureText: !_confirmPasswordVisible,
               cursorColor: kPrimaryColor,
-              decoration: const InputDecoration(
-                hintText: "Confirm password",
+              controller: _confirmPasswordController,
+              decoration: InputDecoration(
+                labelText: "Confirm password",
+                errorText: passWordMatch ? null : "Password does not match",
+                floatingLabelBehavior: FloatingLabelBehavior.auto,
                 prefixIcon: Padding(
-                  padding: EdgeInsets.all(defaultPadding),
-                  child: Icon(Icons.lock),
+                  padding: const EdgeInsets.all(defaultPadding),
+                  child: Icon(Icons.lock,
+                      color: passWordMatch ? null : Colors.red),
+                ),
+                suffixIcon: IconButton(
+                  icon: Icon(
+                    _confirmPasswordVisible
+                        ? Icons.visibility
+                        : Icons.visibility_off,
+                    color:
+                        _confirmPasswordVisible ? kPrimaryColor : Colors.grey,
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      _confirmPasswordVisible = !_confirmPasswordVisible;
+                    });
+                  },
                 ),
               ),
             ),
           ),
           const SizedBox(height: defaultPadding / 2),
-          const Center(
-            child: Text(
-              'Gender',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-          ),
-          Row(
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Radio<String>(
-                value: 'Male',
-                groupValue: _gender,
-                onChanged: (value) {
-                  setState(() {
-                    _gender = value!;
-                  });
-                },
+              GenderSelectionWidget(
+                gender: _gender,
+                setGender: _setGender,
               ),
-              const Text('Male'),
-            ],
-          ),
-          Row(
-            children: [
-              Radio<String>(
-                value: 'Female',
-                groupValue: _gender,
-                onChanged: (value) {
-                  setState(() {
-                    _gender = value!;
-                  });
-                },
-              ),
-              const Text('Female'),
-            ],
-          ),
-          Row(
-            children: [
-              Radio<String>(
-                value: 'Other',
-                groupValue: _gender,
-                onChanged: (value) {
-                  setState(() {
-                    _gender = value!;
-                  });
-                },
-              ),
-              const Text('Other'),
             ],
           ),
           const SizedBox(height: defaultPadding),
@@ -120,8 +169,11 @@ class _SignUpFormState extends State<SignUpForm> {
             keyboardType: TextInputType.datetime,
             cursorColor: kPrimaryColor,
             onSaved: (dateOfBirth) {},
+            controller: _dateOfBirthController,
+            inputFormatters: [dateFormatter],
             decoration: const InputDecoration(
-              hintText: "Date of Birth",
+              labelText: "Date of birth (dd/mm/yyyy)",
+              floatingLabelBehavior: FloatingLabelBehavior.auto,
               prefixIcon: Padding(
                 padding: EdgeInsets.all(defaultPadding),
                 child: Icon(Icons.calendar_today),
@@ -133,8 +185,11 @@ class _SignUpFormState extends State<SignUpForm> {
             keyboardType: TextInputType.phone,
             cursorColor: kPrimaryColor,
             onSaved: (phone) {},
+            controller: _phoneController,
+            inputFormatters: [phoneFormatter],
             decoration: const InputDecoration(
-              hintText: "Phone number",
+              labelText: "Phone number",
+              floatingLabelBehavior: FloatingLabelBehavior.auto,
               prefixIcon: Padding(
                 padding: EdgeInsets.all(defaultPadding),
                 child: Icon(Icons.phone),
@@ -144,7 +199,19 @@ class _SignUpFormState extends State<SignUpForm> {
           const SizedBox(height: defaultPadding),
           Center(
             child: ElevatedButton(
-              onPressed: () {},
+              onPressed: () {
+                if (!_validateInputs()) {
+                  return;
+                }
+                SignUpData signUpData = SignUpData(
+                  email: _emailController.text,
+                  password: _passwordController.text,
+                  gender: _gender == '' ? "Other" : _gender,
+                  dateOfBirth: _dateOfBirthController.text,
+                  phone: _phoneController.text,
+                );
+                var i = 0;
+              },
               child: Text("Sign Up".toUpperCase()),
             ),
           ),
