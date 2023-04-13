@@ -79,7 +79,7 @@ class _MarketplaceWidgetState extends State<MarketplaceWidget> {
                       ),
                     ),
                   ),
-                  SizedBox(width: 16),
+                  const SizedBox(width: 16),
                   Expanded(
                     child: TextField(
                       decoration: InputDecoration(

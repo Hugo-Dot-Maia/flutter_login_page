@@ -28,12 +28,12 @@ class _SignUpFormState extends State<SignUpForm> {
   final TextEditingController _dateOfBirthController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
 
-  final phoneFormatter = new MaskTextInputFormatter(
+  final phoneFormatter = MaskTextInputFormatter(
       mask: '## (##) #####-####',
       filter: {"#": RegExp(r'[0-9]')},
       type: MaskAutoCompletionType.lazy);
 
-  final dateFormatter = new MaskTextInputFormatter(
+  final dateFormatter = MaskTextInputFormatter(
       mask: '##/##/####',
       filter: {"#": RegExp(r'[0-9]')},
       type: MaskAutoCompletionType.lazy);
