@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_login_page/constants.dart';
 
+import 'market_place.dart';
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -11,15 +13,13 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
 
-  static const List<Widget> _widgetOptions = <Widget>[
-    Text(
-      'Index 0: Home',
+  static final List<Widget> _widgetOptions = <Widget>[
+    MarketplaceWidget(),
+    const Text(
+      'Index 1: Cart',
     ),
-    Text(
-      'Index 1: Business',
-    ),
-    Text(
-      'Index 2: School',
+    const Text(
+      'Index 2: Profile',
     ),
   ];
 
