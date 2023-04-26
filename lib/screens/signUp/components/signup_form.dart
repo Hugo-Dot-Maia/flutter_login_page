@@ -210,7 +210,6 @@ class _SignUpFormState extends State<SignUpForm> {
                   dateOfBirth: _dateOfBirthController.text,
                   phone: _phoneController.text,
                 );
-                var i = 0;
               },
               child: Text("Sign Up".toUpperCase()),
             ),

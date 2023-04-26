@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_login_page/constants.dart';
 
 import 'cart_widget.dart';
 import 'market_place.dart';
+import 'profile.dart';
 import 'store/cart_store.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -24,9 +26,7 @@ class _HomeScreenState extends State<HomeScreen> {
     _widgetOptions = <Widget>[
       MarketplaceWidget(cartStore: _cartStore),
       CartWidget(cartStore: _cartStore),
-      const Text(
-        'Index 2: Profile',
-      ),
+      const ProfilePage(),
     ];
   }
 
@@ -59,6 +59,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
+        selectedItemColor: kPrimaryColor,
       ),
     );
   }

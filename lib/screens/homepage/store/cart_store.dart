@@ -21,6 +21,11 @@ abstract class _CartStore with Store {
     _cartItems.remove(item);
   }
 
+  @action
+  void clearCart() {
+    _cartItems.clear();
+  }
+
   List<String> get cartItems => _cartItems;
 
   @action

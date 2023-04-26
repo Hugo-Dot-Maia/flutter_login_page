@@ -32,9 +32,18 @@ class _MarketplaceWidgetState extends State<MarketplaceWidget> {
   String _searchText = '';
 
   void _addToCart(String item) {
-    setState(() {
-      widget.cartStore.addItemToCart(item);
-    });
+    if (widget.cartStore.cartItems.contains(item)) {
+      // Show warning message to user that item is already in cart
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('$item is already in the cart.'),
+        ),
+      );
+    } else {
+      setState(() {
+        widget.cartStore.addItemToCart(item);
+      });
+    }
   }
 
   void _showDetailsDialog(String item) {
@@ -180,7 +189,10 @@ class _MarketplaceWidgetState extends State<MarketplaceWidget> {
                       subtitle: const Text('Item description goes --here'),
                       trailing: InkWell(
                         onTap: () => _showDetailsDialog(item),
-                        child: const Icon(Icons.add_shopping_cart),
+                        child: const Icon(
+                          Icons.add_shopping_cart,
+                          color: Colors.green,
+                        ),
                       ),
                     ),
                   ),
