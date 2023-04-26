@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_login_page/constants.dart';
 
+import 'cart_widget.dart';
 import 'market_place.dart';
+import 'store/cart_store.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -12,16 +13,22 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
+  final CartStore _cartStore = CartStore();
 
-  static final List<Widget> _widgetOptions = <Widget>[
-    MarketplaceWidget(),
-    const Text(
-      'Index 1: Cart',
-    ),
-    const Text(
-      'Index 2: Profile',
-    ),
-  ];
+  late List<Widget> _widgetOptions;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _widgetOptions = <Widget>[
+      MarketplaceWidget(cartStore: _cartStore),
+      CartWidget(cartStore: _cartStore),
+      const Text(
+        'Index 2: Profile',
+      ),
+    ];
+  }
 
   void _onItemTapped(int index) {
     setState(() {
@@ -51,7 +58,6 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
         currentIndex: _selectedIndex,
-        selectedItemColor: kPrimaryColor,
         onTap: _onItemTapped,
       ),
     );

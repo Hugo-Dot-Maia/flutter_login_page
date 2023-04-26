@@ -2,13 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_login_page/constants.dart';
 
 import 'market_place_filter.dart';
+import 'store/cart_store.dart';
 
 class MarketplaceWidget extends StatefulWidget {
+  final CartStore cartStore;
+
+  const MarketplaceWidget({Key? key, required this.cartStore})
+      : super(key: key);
+
   @override
   _MarketplaceWidgetState createState() => _MarketplaceWidgetState();
 }
 
 class _MarketplaceWidgetState extends State<MarketplaceWidget> {
+  TextEditingController _searchController = TextEditingController();
+
   List<String> items = [
     'Item 1',
     'Item 2',
@@ -21,6 +29,40 @@ class _MarketplaceWidgetState extends State<MarketplaceWidget> {
     'Item 9',
   ];
   List<String> _selectedFilters = [];
+  String _searchText = '';
+
+  void _addToCart(String item) {
+    setState(() {
+      widget.cartStore.addItemToCart(item);
+    });
+  }
+
+  void _showDetailsDialog(String item) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(item),
+          content: Text('Additional information about $item goes here.'),
+          actions: [
+            TextButton(
+              child: const Text('CANCEL'),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+            TextButton(
+              child: const Text('ADD TO CART'),
+              onPressed: () {
+                _addToCart(item);
+                // Add item to cart
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   void _onSaveFilters(List<String> selectedFilters) {
     setState(() {
       _selectedFilters = selectedFilters;
@@ -42,14 +84,6 @@ class _MarketplaceWidgetState extends State<MarketplaceWidget> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Marketplace'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.shopping_cart),
-            onPressed: () {
-              // Navigate to cart screen
-            },
-          ),
-        ],
       ),
       drawer: FilterScreen(
         selectedFilters: _selectedFilters,
@@ -61,6 +95,10 @@ class _MarketplaceWidgetState extends State<MarketplaceWidget> {
           Container(
             decoration: const BoxDecoration(
               color: kPrimaryColor,
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(30),
+                bottomRight: Radius.circular(30),
+              ),
             ),
             child: Padding(
               padding: const EdgeInsets.all(16.0),
@@ -81,12 +119,20 @@ class _MarketplaceWidgetState extends State<MarketplaceWidget> {
                   ),
                   const SizedBox(width: 16),
                   Expanded(
-                    child: TextField(
+                    child: TextFormField(
+                      textInputAction: TextInputAction.next,
+                      cursorColor: kPrimaryColor,
+                      onChanged: (value) {
+                        setState(() {
+                          _searchText = value;
+                        });
+                      },
                       decoration: InputDecoration(
                         hintText: 'Search for items',
                         border: InputBorder.none,
-                        fillColor: Colors.white,
+                        fillColor: kPrimaryLightColor,
                         filled: true,
+                        floatingLabelBehavior: FloatingLabelBehavior.auto,
                         suffixIcon: IconButton(
                           icon: const Icon(Icons.search),
                           onPressed: () {
@@ -105,10 +151,13 @@ class _MarketplaceWidgetState extends State<MarketplaceWidget> {
               itemCount: items.length,
               itemBuilder: (BuildContext context, int index) {
                 String item = items[index];
-                if (_selectedFilters.isNotEmpty &&
-                    !_selectedFilters.contains(item)) {
-                  return const SizedBox
-                      .shrink(); // Return an empty widget if the item is not selected
+                if ((_selectedFilters.isNotEmpty &&
+                        !_selectedFilters.contains(item)) ||
+                    (_searchText.isNotEmpty &&
+                        !item
+                            .toLowerCase()
+                            .contains(_searchText.toLowerCase()))) {
+                  return const SizedBox.shrink();
                 }
                 return Padding(
                   padding:
@@ -122,14 +171,17 @@ class _MarketplaceWidgetState extends State<MarketplaceWidget> {
                           color: Colors.grey.withOpacity(0.5),
                           spreadRadius: 2,
                           blurRadius: 5,
-                          offset: Offset(0, 3),
+                          offset: const Offset(0, 3),
                         ),
                       ],
                     ),
                     child: ListTile(
                       title: Text(item),
-                      subtitle: Text('Item description goes here'),
-                      trailing: Text('\$10'),
+                      subtitle: const Text('Item description goes --here'),
+                      trailing: InkWell(
+                        onTap: () => _showDetailsDialog(item),
+                        child: const Icon(Icons.add_shopping_cart),
+                      ),
                     ),
                   ),
                 );
