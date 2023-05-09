@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "741426971966",
+    "project_id": "laboratoriomobile-878cc",
+    "storage_bucket": "laboratoriomobile-878cc.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:741426971966:android:f55d6ed8b87fde54da986f",
+        "android_client_info": {
+          "package_name": "com.example.flutter_login_page"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "741426971966-dl3ekc3voa5sq7ehtott0hdbgq14294r.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDkZr96mbVVFzDE5IVrXEUAAFEthaEnG-U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "741426971966-dl3ekc3voa5sq7ehtott0hdbgq14294r.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
