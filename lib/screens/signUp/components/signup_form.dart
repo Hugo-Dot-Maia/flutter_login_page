@@ -5,6 +5,8 @@ import '../../../entities/user_form.dart';
 import '../../Login/login_screen.dart';
 import 'gender_radio_button.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import '../../../Utils/sign_up_alert.dart';
 
 class SignUpForm extends StatefulWidget {
   const SignUpForm({
@@ -66,6 +68,25 @@ class _SignUpFormState extends State<SignUpForm> {
 
   bool _validateInputs() {
     return _validatePassword();
+  }
+
+  void _signUp() async {
+    try {
+      final userCredential = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(
+              email: _emailController.text, password: _passwordController.text)
+          .then((value) =>
+              showWarningDialog(context, 'User successfully signed up'));
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'weak-password') {
+        showWarningDialog(context, 'The password provided is too weak.');
+      } else if (e.code == 'email-already-in-use') {
+        showWarningDialog(
+            context, 'The account already exists for that email.');
+      }
+    } catch (e) {
+      showWarningDialog(context, 'An error occurred. Please try again later.');
+    }
   }
 
   @override
@@ -199,17 +220,11 @@ class _SignUpFormState extends State<SignUpForm> {
           const SizedBox(height: defaultPadding),
           Center(
             child: ElevatedButton(
-              onPressed: () {
+              onPressed: () async {
                 if (!_validateInputs()) {
                   return;
                 }
-                SignUpData signUpData = SignUpData(
-                  email: _emailController.text,
-                  password: _passwordController.text,
-                  gender: _gender == '' ? "Other" : _gender,
-                  dateOfBirth: _dateOfBirthController.text,
-                  phone: _phoneController.text,
-                );
+                _signUp();
               },
               child: Text("Sign Up".toUpperCase()),
             ),

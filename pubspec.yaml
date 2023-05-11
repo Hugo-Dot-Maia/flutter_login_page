@@ -39,6 +39,7 @@ dependencies:
   flutter_svg: ^1.1.0
   mask_text_input_formatter: ^2.4.0
   firebase_core: ^2.11.0
+  firebase_auth: ^4.5.0
 
 dev_dependencies:
   flutter_test:

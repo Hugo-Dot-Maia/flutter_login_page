@@ -4,6 +4,7 @@ import '../../../components/already_have_an_account_acheck.dart';
 import '../../../constants.dart';
 import '../../homepage/home_page.dart';
 import '../../signUp/signup_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class LoginForm extends StatefulWidget {
   const LoginForm({
@@ -16,6 +17,17 @@ class LoginForm extends StatefulWidget {
 
 class _LoginFormState extends State<LoginForm> {
   bool _passwordVisible = false;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  Future<String> signInWithEmailAndPassword(
+      String email, String password) async {
+    UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+      email: email,
+      password: password,
+    );
+    User? user = userCredential.user;
+    return user!.uid;
+  }
 
   @override
   Widget build(BuildContext context) {
