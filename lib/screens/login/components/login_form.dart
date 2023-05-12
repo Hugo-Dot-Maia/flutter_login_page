@@ -17,16 +17,40 @@ class LoginForm extends StatefulWidget {
 
 class _LoginFormState extends State<LoginForm> {
   bool _passwordVisible = false;
+  bool loginSucces = true;
+  User? user;
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
 
-  Future<String> signInWithEmailAndPassword(
-      String email, String password) async {
-    UserCredential userCredential = await _auth.signInWithEmailAndPassword(
-      email: email,
-      password: password,
-    );
-    User? user = userCredential.user;
-    return user!.uid;
+  void _changeLoginState(bool state) {
+    setState(() {
+      loginSucces = state;
+    });
+  }
+
+  Future<void> _signInWithEmailAndPassword() async {
+    try {
+      UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+        email: _emailController.text,
+        password: _passwordController.text,
+      );
+
+      user = userCredential.user;
+      _changeLoginState(true);
+
+      //TODO Refazer como a validação renderiza a homescreen
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) {
+            return const HomeScreen();
+          },
+        ),
+      );
+    } catch (e) {
+      _changeLoginState(false);
+    }
   }
 
   @override
@@ -38,13 +62,14 @@ class _LoginFormState extends State<LoginForm> {
             keyboardType: TextInputType.emailAddress,
             textInputAction: TextInputAction.next,
             cursorColor: kPrimaryColor,
+            controller: _emailController,
             onSaved: (email) {},
             decoration: const InputDecoration(
               labelText: "Your email",
               floatingLabelBehavior: FloatingLabelBehavior.auto,
               prefixIcon: Padding(
                 padding: EdgeInsets.all(defaultPadding),
-                child: Icon(Icons.person),
+                child: Icon(Icons.lock),
               ),
             ),
           ),
@@ -54,12 +79,15 @@ class _LoginFormState extends State<LoginForm> {
               textInputAction: TextInputAction.done,
               obscureText: !_passwordVisible,
               cursorColor: kPrimaryColor,
+              controller: _passwordController,
               decoration: InputDecoration(
                 labelText: "Your password",
+                errorText: loginSucces ? null : "Error on Login",
                 floatingLabelBehavior: FloatingLabelBehavior.auto,
-                prefixIcon: const Padding(
-                  padding: EdgeInsets.all(defaultPadding),
-                  child: Icon(Icons.lock),
+                prefixIcon: Padding(
+                  padding: const EdgeInsets.all(defaultPadding),
+                  child:
+                      Icon(Icons.lock, color: loginSucces ? null : Colors.red),
                 ),
                 suffixIcon: IconButton(
                   icon: Icon(
@@ -79,15 +107,8 @@ class _LoginFormState extends State<LoginForm> {
           Hero(
             tag: "login_btn",
             child: ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return const HomeScreen();
-                    },
-                  ),
-                );
+              onPressed: () async {
+                _signInWithEmailAndPassword();
               },
               child: Text(
                 "Login".toUpperCase(),
