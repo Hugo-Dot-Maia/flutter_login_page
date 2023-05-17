@@ -49,6 +49,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '741426971966',
     projectId: 'laboratoriomobile-878cc',
     authDomain: 'laboratoriomobile-878cc.firebaseapp.com',
+    databaseURL: 'https://laboratoriomobile-878cc-default-rtdb.firebaseio.com',
     storageBucket: 'laboratoriomobile-878cc.appspot.com',
     measurementId: 'G-FT4E8GG144',
   );
@@ -58,6 +59,7 @@ class DefaultFirebaseOptions {
     appId: '1:741426971966:android:f55d6ed8b87fde54da986f',
     messagingSenderId: '741426971966',
     projectId: 'laboratoriomobile-878cc',
+    databaseURL: 'https://laboratoriomobile-878cc-default-rtdb.firebaseio.com',
     storageBucket: 'laboratoriomobile-878cc.appspot.com',
   );
 
@@ -66,6 +68,7 @@ class DefaultFirebaseOptions {
     appId: '1:741426971966:ios:36e15a47e80f11b7da986f',
     messagingSenderId: '741426971966',
     projectId: 'laboratoriomobile-878cc',
+    databaseURL: 'https://laboratoriomobile-878cc-default-rtdb.firebaseio.com',
     storageBucket: 'laboratoriomobile-878cc.appspot.com',
     iosClientId: '741426971966-5h48crc47878o6ta0numob9hb9picdd0.apps.googleusercontent.com',
     iosBundleId: 'com.example.flutterLoginPage',
@@ -76,6 +79,7 @@ class DefaultFirebaseOptions {
     appId: '1:741426971966:ios:36e15a47e80f11b7da986f',
     messagingSenderId: '741426971966',
     projectId: 'laboratoriomobile-878cc',
+    databaseURL: 'https://laboratoriomobile-878cc-default-rtdb.firebaseio.com',
     storageBucket: 'laboratoriomobile-878cc.appspot.com',
     iosClientId: '741426971966-5h48crc47878o6ta0numob9hb9picdd0.apps.googleusercontent.com',
     iosBundleId: 'com.example.flutterLoginPage',
