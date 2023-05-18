@@ -1,0 +1,148 @@
+import '../entities/shopping_item.dart';
+
+List<ShoppingItem> shoppingList = [
+  ShoppingItem(
+    itemName: 'Toothbrush',
+    description: 'Soft-bristled toothbrush for daily oral care',
+    type: ItemType.healthcare,
+    price: 2.99,
+  ),
+  ShoppingItem(
+    itemName: 'Shampoo',
+    description: 'Moisturizing shampoo for healthy hair',
+    type: ItemType.consumableGoods,
+    price: 5.99,
+  ),
+  ShoppingItem(
+    itemName: 'Face Mask',
+    description: 'Disposable face mask for protection',
+    type: ItemType.healthcare,
+    price: 9.99,
+  ),
+  ShoppingItem(
+    itemName: 'Coffee',
+    description: 'Medium roast ground coffee for a rich flavor',
+    type: ItemType.consumableGoods,
+    price: 12.99,
+  ),
+  ShoppingItem(
+    itemName: 'Toothpaste',
+    description: 'Fluoride toothpaste for cavity protection',
+    type: ItemType.healthcare,
+    price: 3.99,
+  ),
+  ShoppingItem(
+    itemName: 'Soap',
+    description: 'Moisturizing soap for clean hands',
+    type: ItemType.consumableGoods,
+    price: 1.99,
+  ),
+  ShoppingItem(
+    itemName: 'Paracetamol',
+    description: 'Paracetamol for fever and pain relief',
+    type: ItemType.healthcare,
+    price: 4.99,
+  ),
+  ShoppingItem(
+    itemName: 'Vitamin C',
+    description: 'Vitamin C for immune system support',
+    type: ItemType.healthcare,
+    price: 7.99,
+  ),
+  ShoppingItem(
+    itemName: 'Bread',
+    description: 'Bread for a quick meal',
+    type: ItemType.consumableGoods,
+    price: 2.50,
+  ),
+  ShoppingItem(
+    itemName: 'Milk',
+    description: 'Milk for a quick meal',
+    type: ItemType.consumableGoods,
+    price: 3.50,
+  ),
+  ShoppingItem(
+    itemName: 'Eggs',
+    description: 'Eggs for a quick meal',
+    type: ItemType.consumableGoods,
+    price: 2.99,
+  ),
+  ShoppingItem(
+    itemName: 'Butter',
+    description: 'Butter for a quick meal',
+    type: ItemType.consumableGoods,
+    price: 1.99,
+  ),
+  ShoppingItem(
+    itemName: 'Cheese',
+    description: 'Cheese for a quick meal',
+    type: ItemType.consumableGoods,
+    price: 4.99,
+  ),
+  ShoppingItem(
+    itemName: 'Chicken',
+    description: 'Chicken for a quick meal',
+    type: ItemType.consumableGoods,
+    price: 5.99,
+  ),
+  ShoppingItem(
+    itemName: 'Beef',
+    description: 'Beef for a quick meal',
+    type: ItemType.consumableGoods,
+    price: 6.99,
+  ),
+  ShoppingItem(
+    itemName: 'Pork',
+    description: 'Pork for a quick meal',
+    type: ItemType.consumableGoods,
+    price: 7.99,
+  ),
+  ShoppingItem(
+    itemName: 'Fish',
+    description: 'Fish for a quick meal',
+    type: ItemType.consumableGoods,
+    price: 8.99,
+  ),
+  ShoppingItem(
+    itemName: 'Rice',
+    description: 'Rice for a quick meal',
+    type: ItemType.consumableGoods,
+    price: 9.99,
+  ),
+  ShoppingItem(
+    itemName: 'Pasta',
+    description: 'Pasta for a quick meal',
+    type: ItemType.consumableGoods,
+    price: 10.99,
+  ),
+  ShoppingItem(
+    itemName: 'Cereal',
+    description: 'Cereal for a quick meal',
+    type: ItemType.consumableGoods,
+    price: 11.99,
+  ),
+  ShoppingItem(
+    itemName: 'Ibuprofen',
+    description: 'Ibuprofen for fever and pain relief',
+    type: ItemType.healthcare,
+    price: 4.99,
+  ),
+  ShoppingItem(
+    itemName: 'Aspirin',
+    description: 'Aspirin for fever and pain relief',
+    type: ItemType.healthcare,
+    price: 3.99,
+  ),
+  ShoppingItem(
+    itemName: 'Antacid',
+    description: 'Antacid for heartburn relief',
+    type: ItemType.healthcare,
+    price: 5.99,
+  ),
+  ShoppingItem(
+    itemName: 'Antihistamine',
+    description: 'Antihistamine for allergy relief',
+    type: ItemType.healthcare,
+    price: 6.99,
+  ),
+];

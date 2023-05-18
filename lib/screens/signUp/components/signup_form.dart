@@ -159,7 +159,6 @@ class _SignUpFormState extends State<SignUpForm> {
       "gender": _gender,
       "role": _role,
     };
-    // Add a new document with a generated ID
     db.collection("users").doc("userData").set(user);
   }
 

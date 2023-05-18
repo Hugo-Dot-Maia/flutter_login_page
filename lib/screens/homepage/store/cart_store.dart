@@ -1,5 +1,7 @@
 import 'package:mobx/mobx.dart';
 
+import '../../../entities/shopping_item.dart';
+
 part 'cart_store.g.dart';
 
 class CartStore = _CartStore with _$CartStore;
@@ -9,15 +11,15 @@ abstract class _CartStore with Store {
   int count = 0;
 
   @observable
-  ObservableList<String> _cartItems = ObservableList<String>.of([]);
+  ObservableList<ShoppingItem> _cartItems = ObservableList<ShoppingItem>.of([]);
 
   @action
-  void addItemToCart(String item) {
+  void addItemToCart(ShoppingItem item) {
     _cartItems.add(item);
   }
 
   @action
-  void removeItemFromCart(String item) {
+  void removeItemFromCart(ShoppingItem item) {
     _cartItems.remove(item);
   }
 
@@ -26,7 +28,7 @@ abstract class _CartStore with Store {
     _cartItems.clear();
   }
 
-  List<String> get cartItems => _cartItems;
+  List<ShoppingItem> get cartItems => _cartItems;
 
   @action
   void increment() {

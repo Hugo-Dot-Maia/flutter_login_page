@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_login_page/constants.dart';
+import 'package:flutter_login_page/entities/shopping_item.dart';
 
+import '../../Utils/shopping_list.dart';
 import 'market_place_filter.dart';
 import 'store/cart_store.dart';
 
@@ -16,27 +18,17 @@ class MarketplaceWidget extends StatefulWidget {
 
 class _MarketplaceWidgetState extends State<MarketplaceWidget> {
   TextEditingController _searchController = TextEditingController();
+  var test = shoppingList;
 
-  List<String> items = [
-    'Item 1',
-    'Item 2',
-    'Item 3',
-    'Item 4',
-    'Item 5',
-    'Item 6',
-    'Item 7',
-    'Item 8',
-    'Item 9',
-  ];
   List<String> _selectedFilters = [];
   String _searchText = '';
 
-  void _addToCart(String item) {
+  void _addToCart(ShoppingItem item) {
     if (widget.cartStore.cartItems.contains(item)) {
       // Show warning message to user that item is already in cart
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('$item is already in the cart.'),
+          content: Text('${item.itemName} is already in the cart.'),
         ),
       );
     } else {
@@ -46,13 +38,13 @@ class _MarketplaceWidgetState extends State<MarketplaceWidget> {
     }
   }
 
-  void _showDetailsDialog(String item) {
+  void _showDetailsDialog(ShoppingItem item) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text(item),
-          content: Text('Additional information about $item goes here.'),
+          title: Text(item.itemName),
+          content: Text(item.description),
           actions: [
             TextButton(
               child: const Text('CANCEL'),
@@ -62,7 +54,7 @@ class _MarketplaceWidgetState extends State<MarketplaceWidget> {
               child: const Text('ADD TO CART'),
               onPressed: () {
                 _addToCart(item);
-                // Add item to cart
+
                 Navigator.of(context).pop();
               },
             ),
@@ -157,13 +149,13 @@ class _MarketplaceWidgetState extends State<MarketplaceWidget> {
           ),
           Expanded(
             child: ListView.builder(
-              itemCount: items.length,
+              itemCount: shoppingList.length,
               itemBuilder: (BuildContext context, int index) {
-                String item = items[index];
+                ShoppingItem item = shoppingList[index];
                 if ((_selectedFilters.isNotEmpty &&
-                        !_selectedFilters.contains(item)) ||
+                        !_selectedFilters.contains(item.itemName)) ||
                     (_searchText.isNotEmpty &&
-                        !item
+                        !item.itemName
                             .toLowerCase()
                             .contains(_searchText.toLowerCase()))) {
                   return const SizedBox.shrink();
@@ -185,8 +177,11 @@ class _MarketplaceWidgetState extends State<MarketplaceWidget> {
                       ],
                     ),
                     child: ListTile(
-                      title: Text(item),
-                      subtitle: const Text('Item description goes --here'),
+                      title: Text(item.itemName),
+                      subtitle: Text(item.description),
+                      leading: Icon(item.type == ItemType.healthcare
+                          ? Icons.local_hospital
+                          : Icons.restaurant_menu),
                       trailing: InkWell(
                         onTap: () => _showDetailsDialog(item),
                         child: const Icon(

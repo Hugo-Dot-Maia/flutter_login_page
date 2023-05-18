@@ -1,5 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+import '../../Utils/sign_up_alert.dart';
+import '../../entities/shopping_item.dart';
 import 'home_page.dart';
 import 'store/cart_store.dart';
 
@@ -13,7 +17,7 @@ class CartWidget extends StatefulWidget {
 }
 
 class _CartWidgetState extends State<CartWidget> {
-  late List<String> _cartItems;
+  late List<ShoppingItem> _cartItems;
 
   @override
   void initState() {
@@ -21,7 +25,7 @@ class _CartWidgetState extends State<CartWidget> {
     _cartItems = widget.cartStore.cartItems;
   }
 
-  void _removeItemFromCart(String item) {
+  void _removeItemFromCart(ShoppingItem item) {
     setState(() {
       widget.cartStore.removeItemFromCart(item);
       _cartItems = widget.cartStore.cartItems;
@@ -35,18 +39,30 @@ class _CartWidgetState extends State<CartWidget> {
     });
   }
 
-  double getItemPrice(String item) {
-    // Calculate the price of an item
-    return 10;
-  }
-
   double _getTotalPrice() {
     // Calculate the total price of all the items in the cart
     double total = 0;
-    for (String item in _cartItems) {
-      total += getItemPrice(item);
+    for (var item in _cartItems) {
+      total += item.price;
     }
     return total;
+  }
+
+  Future<void> _createOrder(List<ShoppingItem> cartItems) async {
+    String userEmail = FirebaseAuth.instance.currentUser!.email!;
+    var db = FirebaseFirestore.instance;
+
+    final order = <String, dynamic>{
+      'userEmail': userEmail,
+      'items': cartItems.map((item) => item.itemName).toList(),
+      'totalPrice': _getTotalPrice(),
+    };
+    try {
+      await db.collection('users').doc('orders').set(order);
+      showWarningDialog(context, 'Order placed successfully!');
+    } catch (e) {
+      showWarningDialog(context, 'An error occurred. Please try again later.');
+    }
   }
 
   @override
@@ -62,7 +78,7 @@ class _CartWidgetState extends State<CartWidget> {
             child: ListView.builder(
               itemCount: _cartItems.length,
               itemBuilder: (BuildContext context, int index) {
-                String item = _cartItems[index];
+                ShoppingItem item = _cartItems[index];
                 return Padding(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -80,8 +96,11 @@ class _CartWidgetState extends State<CartWidget> {
                       ],
                     ),
                     child: ListTile(
-                      title: Text(item),
-                      subtitle: const Text('Item description goes here'),
+                      title: Text(item.itemName),
+                      subtitle: Text(item.description),
+                      leading: Icon(item.type == ItemType.healthcare
+                          ? Icons.local_hospital
+                          : Icons.restaurant_menu),
                       trailing: InkWell(
                         onTap: () => _removeItemFromCart(item),
                         child: const Icon(Icons.remove_shopping_cart,
@@ -100,9 +119,8 @@ class _CartWidgetState extends State<CartWidget> {
               children: [
                 Text('Total: \$${_getTotalPrice()}'),
                 ElevatedButton(
-                  onPressed: () {
-                    // Do something with the cart items, such as place an order
-                    // and clear the cart.
+                  onPressed: () async {
+                    await _createOrder(_cartItems);
                     _clearCartItems();
                   },
                   child: const Text('Place Order'),
