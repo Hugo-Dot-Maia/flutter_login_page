@@ -1,4 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_login_page/screens/signUp/components/role_radio_button.dart';
 import '../../../components/already_have_an_account_acheck.dart';
 import '../../../constants.dart';
 import '../../../entities/user_form.dart';
@@ -21,6 +23,9 @@ class _SignUpFormState extends State<SignUpForm> {
   bool _passwordVisible = false;
   bool _confirmPasswordVisible = false;
   bool passWordMatch = true;
+  bool dateOfBirthValid = true;
+  bool phoneValid = true;
+  bool _authCreated = false;
   String _gender = '';
   String _role = '';
   final TextEditingController _emailController = TextEditingController();
@@ -46,6 +51,12 @@ class _SignUpFormState extends State<SignUpForm> {
     });
   }
 
+  void _setRole(String? value) {
+    setState(() {
+      _role = value!;
+    });
+  }
+
   @override
   void dispose() {
     _emailController.dispose();
@@ -66,17 +77,99 @@ class _SignUpFormState extends State<SignUpForm> {
     return true;
   }
 
-  bool _validateInputs() {
-    return _validatePassword();
+  bool _validateDateOfBirth() {
+    // Regular expression pattern for the date format '##/##/####'
+    RegExp regex = RegExp(r'^\d{2}/\d{2}/\d{4}$');
+
+    // Check if the date matches the pattern
+    if (!regex.hasMatch(_dateOfBirthController.text)) {
+      setState(() {
+        dateOfBirthValid = false;
+      });
+      return false;
+    }
+
+    // Split the date into day, month, and year
+    List<String> parts = _dateOfBirthController.text.split('/');
+    int? day = int.tryParse(parts[0]);
+    int? month = int.tryParse(parts[1]);
+    int? year = int.tryParse(parts[2]);
+
+    // Check if the day, month, and year are valid
+    if (day == null || month == null || year == null) {
+      setState(() {
+        dateOfBirthValid = false;
+      });
+      return false;
+    }
+
+    // Perform additional validation on the day, month, and year if needed
+    // For example, you can check if the day is within a valid range, if the month is between 1 and 12, etc.
+
+    // If all checks pass, the date of birth is valid
+    setState(() {
+      dateOfBirthValid = true;
+    });
+    return true;
   }
 
-  void _signUp() async {
+  bool validatePhoneNumber() {
+    // Regular expression pattern for the phone number format '## (##) #####-####'
+    RegExp regex = RegExp(r'^\d{2} \(\d{2}\) \d{5}-\d{4}$');
+
+    // Check if the phone number matches the pattern
+    if (!regex.hasMatch(_phoneController.text)) {
+      setState(() {
+        phoneValid = false;
+      });
+      return false;
+    }
+
+    setState(() {
+      phoneValid = true;
+    });
+    // If all checks pass, the phone number is valid
+    return true;
+  }
+
+  bool _validateInputs() {
+    return _validatePassword() &&
+        _validateDateOfBirth() &&
+        validatePhoneNumber();
+  }
+
+  void _setAuthCreated(bool value) {
+    setState(() {
+      _authCreated = value;
+    });
+  }
+
+  void _createUser() {
+    if (!_authCreated) {
+      return;
+    }
+    var db = FirebaseFirestore.instance;
+
+    final user = <String, dynamic>{
+      "email": _emailController.text,
+      "dateOfBirth": _dateOfBirthController.text,
+      "phone": _phoneController.text,
+      "gender": _gender,
+      "role": _role,
+    };
+    // Add a new document with a generated ID
+    db.collection("users").doc("userData").set(user);
+  }
+
+  Future<void> _createAuth() async {
     try {
       final userCredential = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(
               email: _emailController.text, password: _passwordController.text)
           .then((value) =>
               showWarningDialog(context, 'User successfully signed up'));
+
+      _setAuthCreated(true);
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
         showWarningDialog(context, 'The password provided is too weak.');
@@ -84,9 +177,16 @@ class _SignUpFormState extends State<SignUpForm> {
         showWarningDialog(
             context, 'The account already exists for that email.');
       }
+      _setAuthCreated(false);
     } catch (e) {
       showWarningDialog(context, 'An error occurred. Please try again later.');
+      _setAuthCreated(false);
     }
+  }
+
+  _signUp() async {
+    await _createAuth();
+    _createUser();
   }
 
   @override
@@ -186,18 +286,30 @@ class _SignUpFormState extends State<SignUpForm> {
             ],
           ),
           const SizedBox(height: defaultPadding),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              RoleSelectionWidget(
+                role: _role,
+                setRole: _setRole,
+              ),
+            ],
+          ),
+          const SizedBox(height: defaultPadding),
           TextFormField(
             keyboardType: TextInputType.datetime,
             cursorColor: kPrimaryColor,
             onSaved: (dateOfBirth) {},
             controller: _dateOfBirthController,
             inputFormatters: [dateFormatter],
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
               labelText: "Date of birth (dd/mm/yyyy)",
+              errorText: dateOfBirthValid ? null : "Date of birth invalid",
               floatingLabelBehavior: FloatingLabelBehavior.auto,
               prefixIcon: Padding(
-                padding: EdgeInsets.all(defaultPadding),
-                child: Icon(Icons.calendar_today),
+                padding: const EdgeInsets.all(defaultPadding),
+                child: Icon(Icons.calendar_today,
+                    color: dateOfBirthValid ? null : Colors.red),
               ),
             ),
           ),
@@ -208,12 +320,13 @@ class _SignUpFormState extends State<SignUpForm> {
             onSaved: (phone) {},
             controller: _phoneController,
             inputFormatters: [phoneFormatter],
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
               labelText: "Phone number",
+              errorText: phoneValid ? null : "Phone invalid",
               floatingLabelBehavior: FloatingLabelBehavior.auto,
               prefixIcon: Padding(
-                padding: EdgeInsets.all(defaultPadding),
-                child: Icon(Icons.phone),
+                padding: const EdgeInsets.all(defaultPadding),
+                child: Icon(Icons.phone, color: phoneValid ? null : Colors.red),
               ),
             ),
           ),
@@ -224,7 +337,8 @@ class _SignUpFormState extends State<SignUpForm> {
                 if (!_validateInputs()) {
                   return;
                 }
-                _signUp();
+
+                await _signUp();
               },
               child: Text("Sign Up".toUpperCase()),
             ),
