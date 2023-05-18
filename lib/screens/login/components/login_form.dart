@@ -38,16 +38,6 @@ class _LoginFormState extends State<LoginForm> {
 
       user = userCredential.user;
       _changeLoginState(true);
-
-      //TODO Refazer como a validação renderiza a homescreen
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) {
-            return const HomeScreen();
-          },
-        ),
-      );
     } catch (e) {
       _changeLoginState(false);
     }
@@ -64,12 +54,14 @@ class _LoginFormState extends State<LoginForm> {
             cursorColor: kPrimaryColor,
             controller: _emailController,
             onSaved: (email) {},
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
               labelText: "Your email",
+              errorText: loginSucces ? null : "Error on Login",
               floatingLabelBehavior: FloatingLabelBehavior.auto,
               prefixIcon: Padding(
-                padding: EdgeInsets.all(defaultPadding),
-                child: Icon(Icons.lock),
+                padding: const EdgeInsets.all(defaultPadding),
+                child:
+                    Icon(Icons.person, color: loginSucces ? null : Colors.red),
               ),
             ),
           ),
@@ -108,7 +100,17 @@ class _LoginFormState extends State<LoginForm> {
             tag: "login_btn",
             child: ElevatedButton(
               onPressed: () async {
-                _signInWithEmailAndPassword();
+                await _signInWithEmailAndPassword();
+                if (loginSucces) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return const HomeScreen();
+                      },
+                    ),
+                  );
+                }
               },
               child: Text(
                 "Login".toUpperCase(),

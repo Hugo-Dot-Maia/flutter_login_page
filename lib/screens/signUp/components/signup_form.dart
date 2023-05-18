@@ -29,6 +29,7 @@ class _SignUpFormState extends State<SignUpForm> {
   String _gender = '';
   String _role = '';
   final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController =
       TextEditingController();
@@ -113,7 +114,7 @@ class _SignUpFormState extends State<SignUpForm> {
     return true;
   }
 
-  bool validatePhoneNumber() {
+  bool _validatePhoneNumber() {
     // Regular expression pattern for the phone number format '## (##) #####-####'
     RegExp regex = RegExp(r'^\d{2} \(\d{2}\) \d{5}-\d{4}$');
 
@@ -135,7 +136,7 @@ class _SignUpFormState extends State<SignUpForm> {
   bool _validateInputs() {
     return _validatePassword() &&
         _validateDateOfBirth() &&
-        validatePhoneNumber();
+        _validatePhoneNumber();
   }
 
   void _setAuthCreated(bool value) {
@@ -152,6 +153,7 @@ class _SignUpFormState extends State<SignUpForm> {
 
     final user = <String, dynamic>{
       "email": _emailController.text,
+      "name": _nameController.text,
       "dateOfBirth": _dateOfBirthController.text,
       "phone": _phoneController.text,
       "gender": _gender,
@@ -205,6 +207,20 @@ class _SignUpFormState extends State<SignUpForm> {
             onSaved: (email) {},
             decoration: const InputDecoration(
               labelText: "Your email",
+              floatingLabelBehavior: FloatingLabelBehavior.auto,
+              prefixIcon: Padding(
+                padding: EdgeInsets.all(defaultPadding),
+                child: Icon(Icons.person),
+              ),
+            ),
+          ),
+          TextFormField(
+            keyboardType: TextInputType.name,
+            textInputAction: TextInputAction.next,
+            cursorColor: kPrimaryColor,
+            controller: _nameController,
+            decoration: const InputDecoration(
+              labelText: "Your name",
               floatingLabelBehavior: FloatingLabelBehavior.auto,
               prefixIcon: Padding(
                 padding: EdgeInsets.all(defaultPadding),
