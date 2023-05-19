@@ -3,8 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../../Utils/sign_up_alert.dart';
+import '../../constants.dart';
 import '../../entities/shopping_item.dart';
-import 'home_page.dart';
 import 'store/cart_store.dart';
 
 class CartWidget extends StatefulWidget {
@@ -117,7 +117,10 @@ class _CartWidgetState extends State<CartWidget> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('Total: \$${_getTotalPrice()}'),
+                Text(
+                  'Total: \$${_getTotalPrice()}',
+                  style: totalTextStyle,
+                ),
                 ElevatedButton(
                   onPressed: () async {
                     await _createOrder(_cartItems);
