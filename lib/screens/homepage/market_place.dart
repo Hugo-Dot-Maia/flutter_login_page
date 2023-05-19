@@ -18,10 +18,10 @@ class MarketplaceWidget extends StatefulWidget {
 
 class _MarketplaceWidgetState extends State<MarketplaceWidget> {
   TextEditingController _searchController = TextEditingController();
-  var test = shoppingList;
 
   List<String> _selectedFilters = [];
   String _searchText = '';
+  bool _sortAscending = true;
 
   void _addToCart(ShoppingItem item) {
     if (widget.cartStore.cartItems.contains(item)) {
@@ -80,12 +80,23 @@ class _MarketplaceWidgetState extends State<MarketplaceWidget> {
     // and updating the UI.
   }
 
+  void _sortItemsByPrice() {
+    setState(() {
+      _sortAscending = !_sortAscending;
+      shoppingList.sort((a, b) {
+        if (_sortAscending) {
+          return a.price.compareTo(b.price);
+        } else {
+          return b.price.compareTo(a.price);
+        }
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Marketplace'),
-      ),
+      appBar: AppBar(title: const Text('Marketplace')),
       drawer: FilterScreen(
         selectedFilters: _selectedFilters,
         onSaveFilters: _onSaveFilters,
@@ -145,6 +156,15 @@ class _MarketplaceWidgetState extends State<MarketplaceWidget> {
                   ),
                 ],
               ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: ElevatedButton(
+              onPressed: _sortItemsByPrice,
+              child: Text(_sortAscending
+                  ? 'Sort by Price (Low to High)'
+                  : 'Sort by Price (High to Low)'),
             ),
           ),
           Expanded(

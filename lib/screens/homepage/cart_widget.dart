@@ -18,6 +18,7 @@ class CartWidget extends StatefulWidget {
 
 class _CartWidgetState extends State<CartWidget> {
   late List<ShoppingItem> _cartItems;
+  bool _sortAscending = true;
 
   @override
   void initState() {
@@ -65,6 +66,19 @@ class _CartWidgetState extends State<CartWidget> {
     }
   }
 
+  void _sortItemsByPrice() {
+    setState(() {
+      _sortAscending = !_sortAscending;
+      _cartItems.sort((a, b) {
+        if (_sortAscending) {
+          return a.price.compareTo(b.price);
+        } else {
+          return b.price.compareTo(a.price);
+        }
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -74,6 +88,15 @@ class _CartWidgetState extends State<CartWidget> {
       ),
       body: Column(
         children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: ElevatedButton(
+              onPressed: _sortItemsByPrice,
+              child: Text(_sortAscending
+                  ? 'Sort by Price (Low to High)'
+                  : 'Sort by Price (High to Low)'),
+            ),
+          ),
           Expanded(
             child: ListView.builder(
               itemCount: _cartItems.length,
@@ -118,7 +141,7 @@ class _CartWidgetState extends State<CartWidget> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Total: \$${_getTotalPrice()}',
+                  'Total: \$${_getTotalPrice().toStringAsFixed(2)}',
                   style: totalTextStyle,
                 ),
                 ElevatedButton(
