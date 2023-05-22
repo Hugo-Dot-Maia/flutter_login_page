@@ -11,14 +11,14 @@ class OrderedItems extends StatefulWidget {
 }
 
 class _OrderedItemsState extends State<OrderedItems> {
-  Future<String> getFirebaseUserEmail() async {
-    return FirebaseAuth.instance.currentUser!.email!;
+  Future<String> getFirebaseUserId() async {
+    return FirebaseAuth.instance.currentUser!.uid;
   }
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<String>(
-      future: getFirebaseUserEmail(),
+      future: getFirebaseUserId(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const CircularProgressIndicator();
@@ -28,17 +28,17 @@ class _OrderedItemsState extends State<OrderedItems> {
           return Text('Error: ${snapshot.error}');
         }
 
-        final email = snapshot.data;
+        final userId = snapshot.data;
 
-        if (email == null) {
-          return const Text('No email found.');
+        if (userId == null) {
+          return const Text('No userId found.');
         }
 
         return FutureBuilder<QuerySnapshot>(
           future: FirebaseFirestore.instance
-              .collection("users")
-              .where('userEmail', isEqualTo: email)
-              .limit(1)
+              .collection('orders')
+              .doc(userId)
+              .collection('userOrders')
               .get(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
@@ -49,13 +49,16 @@ class _OrderedItemsState extends State<OrderedItems> {
               return Text('Error: ${snapshot.error}');
             }
 
-            if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+            if (!snapshot.hasData) {
               return const Text('No items found.');
             }
 
-            final doc = snapshot.data!.docs.first;
-            final items = doc['items'];
-            final finalPrice = doc['totalPrice'];
+            var docSnapshot = snapshot.data!.docs.first;
+
+            var userData = docSnapshot.data();
+
+            final items = (userData as Map<String, dynamic>)['items'];
+            final finalPrice = userData['totalPrice'] as double?;
 
             return ListView.builder(
               itemCount: items.length + 1,
@@ -67,7 +70,7 @@ class _OrderedItemsState extends State<OrderedItems> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          'Total: \$$finalPrice',
+                          'Total: \$${finalPrice?.toStringAsFixed(2)}',
                           style: totalTextStyle,
                         ),
                       ],

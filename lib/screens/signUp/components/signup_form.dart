@@ -159,7 +159,11 @@ class _SignUpFormState extends State<SignUpForm> {
       "gender": _gender,
       "role": _role,
     };
-    db.collection("users").doc("userData").set(user);
+    // Generate a unique ID for the user
+    final newUserId = FirebaseAuth.instance.currentUser?.uid;
+
+    // Save the user data with the generated ID
+    db.collection("users").doc(newUserId).set(user);
   }
 
   Future<void> _createAuth() async {

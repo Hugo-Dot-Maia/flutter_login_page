@@ -52,6 +52,7 @@ class _CartWidgetState extends State<CartWidget> {
   Future<void> _createOrder(List<ShoppingItem> cartItems) async {
     String userEmail = FirebaseAuth.instance.currentUser!.email!;
     var db = FirebaseFirestore.instance;
+    final userId = FirebaseAuth.instance.currentUser?.uid;
 
     final order = <String, dynamic>{
       'userEmail': userEmail,
@@ -59,7 +60,12 @@ class _CartWidgetState extends State<CartWidget> {
       'totalPrice': _getTotalPrice(),
     };
     try {
-      await db.collection('users').doc('orders').set(order);
+      await db
+          .collection('orders')
+          .doc(userId)
+          .collection('userOrders')
+          .doc()
+          .set(order);
       showWarningDialog(context, 'Order placed successfully!');
     } catch (e) {
       showWarningDialog(context, 'An error occurred. Please try again later.');
@@ -70,11 +76,9 @@ class _CartWidgetState extends State<CartWidget> {
     setState(() {
       _sortAscending = !_sortAscending;
       _cartItems.sort((a, b) {
-        if (_sortAscending) {
-          return a.price.compareTo(b.price);
-        } else {
-          return b.price.compareTo(a.price);
-        }
+        return _sortAscending
+            ? a.price.compareTo(b.price)
+            : b.price.compareTo(a.price);
       });
     });
   }
