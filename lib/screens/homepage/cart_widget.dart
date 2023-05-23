@@ -58,6 +58,7 @@ class _CartWidgetState extends State<CartWidget> {
       'userEmail': userEmail,
       'items': cartItems.map((item) => item.itemName).toList(),
       'totalPrice': _getTotalPrice(),
+      'status': 'pending',
     };
     try {
       await db

@@ -1,7 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 import '../../../components/already_have_an_account_acheck.dart';
 import '../../../constants.dart';
+import '../../helperHomePage/helper_home_page.dart';
 import '../../homepage/home_page.dart';
 import '../../signUp/signup_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -41,6 +43,50 @@ class _LoginFormState extends State<LoginForm> {
     } catch (e) {
       _changeLoginState(false);
     }
+  }
+
+  Future<String> getFirebaseUserEmail() async {
+    return FirebaseAuth.instance.currentUser!.email!;
+  }
+
+  Future<String> getRole() async {
+    String email = await getFirebaseUserEmail();
+    String name = '';
+
+    var querySnapshot = await FirebaseFirestore.instance
+        .collection("users")
+        .where('email', isEqualTo: email)
+        .limit(1)
+        .get();
+
+    if (querySnapshot.docs.isNotEmpty) {
+      var docSnapshot = querySnapshot.docs.first;
+      var userData = docSnapshot.data();
+      name = userData['role'];
+    }
+
+    return name;
+  }
+
+  void _navigateToHomePage(Widget page) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) {
+          return page;
+        },
+      ),
+    );
+  }
+
+  void _login() async {
+    if (!loginSucces) return;
+
+    var role = await getRole();
+
+    role == 'Helper'
+        ? _navigateToHomePage(const HelperHomePage())
+        : _navigateToHomePage(const HomeScreen());
   }
 
   @override
@@ -101,16 +147,7 @@ class _LoginFormState extends State<LoginForm> {
             child: ElevatedButton(
               onPressed: () async {
                 await _signInWithEmailAndPassword();
-                if (loginSucces) {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) {
-                        return const HomeScreen();
-                      },
-                    ),
-                  );
-                }
+                _login();
               },
               child: Text(
                 "Login".toUpperCase(),
