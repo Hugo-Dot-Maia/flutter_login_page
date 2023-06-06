@@ -55,6 +55,12 @@ class _HelperMarketPlaceState extends State<HelperMarketPlace> {
     }
   }
 
+  void _attendOrder(UserOrder item) {
+    try {} catch (e) {
+      showWarningDialog(context, 'Error attending order ');
+    }
+  }
+
   _showDetailsDialog(UserOrder item) {
     showDialog(
       context: context,
@@ -71,7 +77,7 @@ class _HelperMarketPlaceState extends State<HelperMarketPlace> {
               child:
                   const Text('ATTEND', style: TextStyle(color: Colors.green)),
               onPressed: () {
-                // _addToCart(item);
+                _attendOrder(item);
 
                 Navigator.of(context).pop();
               },

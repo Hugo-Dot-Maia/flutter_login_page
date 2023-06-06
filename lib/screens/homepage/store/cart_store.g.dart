@@ -9,18 +9,19 @@ part of 'cart_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic, no_leading_underscores_for_local_identifiers
 
 mixin _$CartStore on _CartStore, Store {
-  late final _$countAtom = Atom(name: '_CartStore.count', context: context);
+  late final _$_cartItemsAtom =
+      Atom(name: '_CartStore._cartItems', context: context);
 
   @override
-  int get count {
-    _$countAtom.reportRead();
-    return super.count;
+  ObservableList<ShoppingItem> get _cartItems {
+    _$_cartItemsAtom.reportRead();
+    return super._cartItems;
   }
 
   @override
-  set count(int value) {
-    _$countAtom.reportWrite(value, super.count, () {
-      super.count = value;
+  set _cartItems(ObservableList<ShoppingItem> value) {
+    _$_cartItemsAtom.reportWrite(value, super._cartItems, () {
+      super._cartItems = value;
     });
   }
 
@@ -28,22 +29,33 @@ mixin _$CartStore on _CartStore, Store {
       ActionController(name: '_CartStore', context: context);
 
   @override
-  void increment() {
-    final _$actionInfo =
-        _$_CartStoreActionController.startAction(name: '_CartStore.increment');
+  void addItemToCart(ShoppingItem item) {
+    final _$actionInfo = _$_CartStoreActionController.startAction(
+        name: '_CartStore.addItemToCart');
     try {
-      return super.increment();
+      return super.addItemToCart(item);
     } finally {
       _$_CartStoreActionController.endAction(_$actionInfo);
     }
   }
 
   @override
-  void decrement() {
-    final _$actionInfo =
-        _$_CartStoreActionController.startAction(name: '_CartStore.decrement');
+  void removeItemFromCart(ShoppingItem item) {
+    final _$actionInfo = _$_CartStoreActionController.startAction(
+        name: '_CartStore.removeItemFromCart');
     try {
-      return super.decrement();
+      return super.removeItemFromCart(item);
+    } finally {
+      _$_CartStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void clearCart() {
+    final _$actionInfo =
+        _$_CartStoreActionController.startAction(name: '_CartStore.clearCart');
+    try {
+      return super.clearCart();
     } finally {
       _$_CartStoreActionController.endAction(_$actionInfo);
     }
@@ -52,7 +64,7 @@ mixin _$CartStore on _CartStore, Store {
   @override
   String toString() {
     return '''
-count: ${count}
+
     ''';
   }
 }

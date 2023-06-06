@@ -8,9 +8,6 @@ class CartStore = _CartStore with _$CartStore;
 
 abstract class _CartStore with Store {
   @observable
-  int count = 0;
-
-  @observable
   ObservableList<ShoppingItem> _cartItems = ObservableList<ShoppingItem>.of([]);
 
   @action
@@ -29,14 +26,4 @@ abstract class _CartStore with Store {
   }
 
   List<ShoppingItem> get cartItems => _cartItems;
-
-  @action
-  void increment() {
-    count++;
-  }
-
-  @action
-  void decrement() {
-    count--;
-  }
 }
