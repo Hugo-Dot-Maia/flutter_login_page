@@ -3,10 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_login_page/screens/signUp/components/role_radio_button.dart';
 import '../../../components/already_have_an_account_acheck.dart';
 import '../../../constants.dart';
-import '../../../entities/user_form.dart';
 import '../../Login/login_screen.dart';
 import 'gender_radio_button.dart';
-import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../../../Utils/sign_up_alert.dart';
 
@@ -35,16 +33,6 @@ class _SignUpFormState extends State<SignUpForm> {
       TextEditingController();
   final TextEditingController _dateOfBirthController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
-
-  final phoneFormatter = MaskTextInputFormatter(
-      mask: '## (##) #####-####',
-      filter: {"#": RegExp(r'[0-9]')},
-      type: MaskAutoCompletionType.lazy);
-
-  final dateFormatter = MaskTextInputFormatter(
-      mask: '##/##/####',
-      filter: {"#": RegExp(r'[0-9]')},
-      type: MaskAutoCompletionType.lazy);
 
   void _setGender(String? value) {
     setState(() {

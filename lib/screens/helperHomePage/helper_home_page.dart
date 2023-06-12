@@ -25,7 +25,7 @@ class _HelperHomePageState extends State<HelperHomePage> {
       const Text(
         'Index 2: Items',
       ),
-      const ProfilePage(),
+      ProfilePage(),
     ];
   }
 
