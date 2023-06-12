@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import '../../constants.dart';
 import '../welcome/welcome_screen.dart';
@@ -122,6 +123,14 @@ class _ProfilePageState extends State<ProfilePage> {
       userData['phone'] = newPhone;
       userData['dateOfBirth'] = newDateOfBirth;
 
+      try {
+        await docSnapshot.reference.update(userData);
+        _showToast('User data updated successfully!', Colors.green);
+      } catch (e) {
+        print('Error updating user data: $e');
+        _showToast('Failed to update user data.', Colors.red);
+      }
+
       await docSnapshot.reference.update(userData);
     }
   }
@@ -150,6 +159,17 @@ class _ProfilePageState extends State<ProfilePage> {
           );
         }
       },
+    );
+  }
+
+  void _showToast(String message, Color color) {
+    Fluttertoast.showToast(
+      msg: message,
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.BOTTOM,
+      backgroundColor: color,
+      textColor: Colors.white,
+      fontSize: 16.0,
     );
   }
 

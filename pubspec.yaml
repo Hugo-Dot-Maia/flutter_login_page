@@ -45,6 +45,7 @@ dependencies:
   geolocator: ^8.0.0
   flutter_map: ^4.0.0
   flutter_map_marker_cluster: ^1.1.1
+  fluttertoast: ^8.0.8
 
 
 dev_dependencies:
