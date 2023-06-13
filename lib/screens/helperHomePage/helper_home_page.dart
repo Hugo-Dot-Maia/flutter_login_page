@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_login_page/screens/helperHomePage/user_accepted_orders.dart';
 
 import '../../constants.dart';
 import '../homepage/profile.dart';
@@ -22,9 +23,7 @@ class _HelperHomePageState extends State<HelperHomePage> {
 
     _widgetOptions = <Widget>[
       const HelperMarketPlace(),
-      const Text(
-        'Index 2: Items',
-      ),
+      const UserAcceptedOrders(),
       const ProfilePage(),
     ];
   }
