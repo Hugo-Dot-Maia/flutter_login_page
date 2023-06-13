@@ -31,18 +31,7 @@ class _OrderedItemsState extends State<OrderedItems> {
       // Get the reference to the Firestore document for the order
       final userId = FirebaseAuth.instance.currentUser?.uid;
 
-      final userOrdersCollectionRef = FirebaseFirestore.instance
-          .collection('orders')
-          .doc(userId)
-          .collection('userOrders');
-
-      // Query the user order document based on the user order details
-      final querySnapshot = await userOrdersCollectionRef
-          .where('helpedEmail', isEqualTo: item.helpedEmail)
-          .where('status', isEqualTo: item.status)
-          .get();
-
-      final test = await FirebaseFirestore.instance
+      final querySnapshot = await FirebaseFirestore.instance
           .collection('orders')
           .doc(userId)
           .collection('userOrders')

@@ -29,7 +29,7 @@ class _HomeScreenState extends State<HomeScreen> {
       MarketplaceWidget(cartStore: _cartStore),
       CartWidget(cartStore: _cartStore),
       const OrderedItems(),
-      ProfilePage(),
+      const ProfilePage(),
     ];
   }
 
