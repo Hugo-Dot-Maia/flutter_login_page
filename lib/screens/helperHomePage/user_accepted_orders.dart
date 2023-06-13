@@ -35,7 +35,8 @@ class _UserAcceptedOrdersState extends State<UserAcceptedOrders> {
       }
 
       String attenderEmail = await getFirebaseUserEmail();
-      final List<UserOrder> acceptedOrders = [];
+
+      List<UserOrder> acceptedOrders = [];
 
       for (var userSnapshot in userSnapshots.docs) {
         final Map<String, dynamic> data =
@@ -53,6 +54,7 @@ class _UserAcceptedOrdersState extends State<UserAcceptedOrders> {
           );
         }
       }
+
       setState(() {
         userAcceptedOrders = acceptedOrders;
       });
@@ -99,42 +101,58 @@ class _UserAcceptedOrdersState extends State<UserAcceptedOrders> {
                       ? const TextStyle(color: Colors.orange)
                       : const TextStyle(color: Colors.green),
                 ),
-                trailing: InkWell(
-                  onTap: () {
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          title: const Text('Order Details'),
-                          content: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text('Items: ${item.items.join(", ")}'),
-                              Text('Status: ${item.status}'),
-                              Text(
-                                'Total Price: ${item.totalPrice.toStringAsFixed(2)}',
-                                style: totalTextStyle,
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    InkWell(
+                      onTap: () {
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: const Text('Order Details'),
+                              content: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text('Items: ${item.items.join(", ")}'),
+                                  Text('Status: ${item.status}'),
+                                  Text(
+                                    'Total Price: ${item.totalPrice.toStringAsFixed(2)}',
+                                    style: totalTextStyle,
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
-                          actions: [
-                            TextButton(
-                              child: const Text(
-                                'CLOSE',
-                                style: TextStyle(color: Colors.red),
-                              ),
-                              onPressed: () => Navigator.of(context).pop(),
-                            ),
-                          ],
+                              actions: [
+                                TextButton(
+                                  child: const Text(
+                                    'CLOSE',
+                                    style: TextStyle(color: Colors.red),
+                                  ),
+                                  onPressed: () => Navigator.of(context).pop(),
+                                ),
+                              ],
+                            );
+                          },
                         );
                       },
-                    );
-                  },
-                  child: const Icon(
-                    Icons.info,
-                    color: Colors.yellow,
-                  ),
+                      child: const Icon(
+                        Icons.info,
+                        color: Colors.yellow,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    InkWell(
+                      onTap: () {
+                        // Handle map icon tap
+                        // Do something when the map icon is tapped
+                      },
+                      child: const Icon(
+                        Icons.map,
+                        color: Colors.blue,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),

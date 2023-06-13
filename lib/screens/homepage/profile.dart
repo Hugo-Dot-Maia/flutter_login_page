@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -5,6 +6,12 @@ import 'package:fluttertoast/fluttertoast.dart';
 
 import '../../constants.dart';
 import '../welcome/welcome_screen.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:camera/camera.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:path/path.dart' as path;
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
+import 'package:firebase_storage/firebase_storage.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key}) : super(key: key);
@@ -17,9 +24,11 @@ class _ProfilePageState extends State<ProfilePage> {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController _dateOfBirthController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
+  late List<CameraDescription>? cameras;
   bool showForm = false;
   bool dateOfBirthValid = true;
   bool phoneValid = true;
+  String imageUrl = '';
 
   bool _validatePhoneNumber() {
     // Regular expression pattern for the phone number format '## (##) #####-####'
@@ -74,6 +83,64 @@ class _ProfilePageState extends State<ProfilePage> {
       dateOfBirthValid = true;
     });
     return true;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    // Obtain a list of available cameras
+    findCameras();
+  }
+
+  Future<void> findCameras() async {
+    cameras = await availableCameras();
+  }
+
+  Future<void> _capturePhoto() async {
+    try {
+      // Ensure that the camera list is not empty
+      if (cameras == null || cameras!.isEmpty) {
+        return;
+      }
+
+      // Pick the first camera from the list
+      CameraDescription camera = cameras![0];
+
+      // Create a camera controller for the selected camera
+      CameraController controller = CameraController(
+        camera,
+        ResolutionPreset.medium,
+      );
+
+      // Initialize the camera controller
+      await controller.initialize();
+
+      // Take a picture
+      XFile? picture = await controller.takePicture();
+
+      if (picture != null) {
+        // Get the path where the picture is saved
+        String picturePath = picture.path;
+
+        // Save the picture locally as an XML file
+        File xmlFile = File('path/to/save/xml/file.xml');
+        File pictureFile = File(picturePath);
+        await pictureFile.copy(xmlFile.path);
+
+        // Do something with the XML file (e.g., read, parse, etc.)
+        // ...
+
+        // Show a success message or perform any additional actions
+        print('Picture saved as XML file: ${xmlFile.path}');
+      }
+      // Upload the picture file to Firebase Storage
+
+      // Do something with the captured picture (e.g., save it, display it, etc.)
+      // ...
+    } catch (e) {
+      // Handle any errors that occur during the capture process
+      print('Error capturing photo: $e');
+    }
   }
 
   Future<void> signOut() async {
@@ -288,6 +355,9 @@ class _ProfilePageState extends State<ProfilePage> {
               },
               child: const Text('Sign Out'),
             ),
+            IconButton(
+                onPressed: _capturePhoto,
+                icon: const Icon(Icons.camera_alt_outlined)),
           ],
         ),
       ),

@@ -46,6 +46,12 @@ dependencies:
   flutter_map: ^4.0.0
   flutter_map_marker_cluster: ^1.1.1
   fluttertoast: ^8.0.8
+  flutter_widget_from_html: ^0.7.0
+  image_cropper: ^1.4.0
+  image_picker: ^0.8.8
+  firebase_storage: ^11.2.2
+  camera: ^0.10.5+2
+
 
 
 dev_dependencies:

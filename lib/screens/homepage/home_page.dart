@@ -22,7 +22,7 @@ class _HomeScreenState extends State<HomeScreen> {
   late List<Widget> _widgetOptions;
 
   @override
-  void initState() {
+  Future<void> initState() async {
     super.initState();
 
     _widgetOptions = <Widget>[
